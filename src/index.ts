@@ -77,9 +77,13 @@ function messageHandler(ws: connection ,message: IncomingMessage){
         const user = userManager.getUser(payload.roomId,payload.userId);
         if(!user){
             console.error("User not found");
-            return;}
-        store.addChat(payload.userId,user.name,payload.roomId,payload.message);
-
+            return;
+        }
+        let chat = store.addChat(payload.userId,user.name,payload.roomId,payload.message);
+        if(!chat){
+            console.error("Chat not found");
+            return;
+        }
         const outgoingPayload : OutgoingMessage= {
             type : OutgoingSupportingMessages.AddChat,
             payload : {
@@ -94,7 +98,11 @@ function messageHandler(ws: connection ,message: IncomingMessage){
     }
     if(message.type === SupportedMessage.UpvotedMessage){
         const payload = message.payload;
-        store.upvote(payload.userId,payload.roomId,payload.chatId);
+        const chat = store.upvote(payload.userId,payload.roomId,payload.chatId);
+        if(!chat){
+            console.error("Chat not found");
+            return;
+        }
 
         const outgoingPayload : OutgoingMessage= {
             type : OutgoingSupportingMessages.UpdateChat,
@@ -102,10 +110,10 @@ function messageHandler(ws: connection ,message: IncomingMessage){
                 roomId:payload.roomId,
                 message:"",
                 name:"",
-                upvotes:1,
+                upvotes:chat.upvotes.length,
                 chatId:payload.chatId
             }
         }
-        userManager.broadcast(payload.roomId,payload.userId,{})
+        userManager.broadcast(payload.roomId,payload.userId,outgoingPayload);
     }
 }
