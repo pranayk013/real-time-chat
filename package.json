@@ -1,14 +1,22 @@
 {
-  "name": "${PROJECT_NAME}",
+  "name": "real-time-chat",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc"
   },
-  "dependencies": {},
   "devDependencies": {
     "typescript": "^5.5.3"
   },
-  "private": true
+  "private": true,
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@types/websocket": "^1.0.10",
+    "websocket": "^1.0.35",
+    "zod": "^3.25.51"
+  }
 }
