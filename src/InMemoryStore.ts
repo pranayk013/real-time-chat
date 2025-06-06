@@ -22,8 +22,13 @@ export class InMemoryStore implements Store{
        return room.chats.reverse().slice(0,offset).slice(-1*limits);
     }
     addChat(userId:UserId,name:string,roomId:string , message:string){
+        if(!this.store.get(roomId)){
+            this.initRoom(roomId);
+        }
         const room = this.store.get(roomId);
-        if(!room){return }
+        if(!room){
+            return;
+        }
         const chat = {
             chatId:String(globalChatId++),
             userId,
@@ -36,7 +41,9 @@ export class InMemoryStore implements Store{
     }
     upvote(userId:UserId,roomId:string , chatId:string){
         const room = this.store.get(roomId);
-        if(!room){return }
+        if(!room){
+            this.initRoom(roomId);
+        }
         // @ts-ignore
         const chat = room.chats.find( ({id}) => id === chatId);
 
